@@ -594,27 +594,27 @@ footer span {
           <div class="logo">
             <span>Roblox</span><span>Obsucator</span><span>.Py</span>
           </div>
-          <div class="logo-sub">SCRIPT PROTECTOR · REAL EXECUTOR OUTPUT</div>
+          <div class="logo-sub">The Best Url Script Obsucator 2026</div>
         </div>
         <div class="badge">V2.0</div>
       </div>
     </header>
 
     <div class="main-card">
-      <div class="section-title">RobloxOsbucater-Oriender</div>
+      <div class="section-title">INPUT</div>
 
       <div class="field">
-        <label>SOURCE SCRIPT <span>*</span></label>
+        <label>Your Lua Source... <span>*</span></label>
         <textarea id="sourceInput" placeholder="-- Paste your Lua/Luau script here..."></textarea>
       </div>
 
       <div class="row">
         <div class="field">
-          <label>PASSWORD <span>*</span></label>
+          <label>Pasword <span>*</span></label>
           <input type="password" id="passwordInput" placeholder="Set a password..."/>
         </div>
         <div class="field">
-          <label>MESSAGE (Cracker) <span>*</span></label>
+          <label>Messenge (Cracker) <span>*</span></label>
           <input type="text" id="messageInput" placeholder="e.g: This script is protected!"/>
         </div>
       </div>
@@ -629,7 +629,7 @@ footer span {
       </div>
 
       <div class="output-wrap" id="outputWrap">
-        <div class="section-title" style="margin-top: 8px;">OUTPUT — PASTE TO EXECUTOR</div>
+        <div class="section-title" style="margin-top: 8px;">String</div>
         <div class="output-box" id="outputBox"></div>
         <div class="output-actions">
           <button class="btn-sm btn-copy-out" id="copyOutBtn" onclick="copyOutput()">COPY</button>
@@ -641,7 +641,7 @@ footer span {
   </div>
   <footer>
     <div class="container">
-      <span>RobloxObsucator.Py</span> ("Print Hi World")
+      <span>RobloxObsucator.Oriender</span> For Safety Your Roblox Script 
     </div>
   </footer>
 </div>
@@ -654,7 +654,7 @@ footer span {
           <div class="logo">
             <span>Roblox</span><span>Obsucator</span><span>.Py</span>
           </div>
-          <div class="logo-sub">Script Protected Url</div>
+          <div class="logo-sub">The Best Url Script 2026</div>
         </div>
         <div class="badge">V2.0</div>
       </div>
@@ -662,8 +662,8 @@ footer span {
 
     <div id="gateStep">
       <div class="gate-card">
-        <div class="gate-title">PROTECTED SCRIPT</div>
-        <div class="gate-sub">ENTER PASSWORD TO ACCESS SOURCE</div>
+        <div class="gate-title">Protecter Url Source </div>
+        <div class="gate-sub">Enter Pasword To Access Script Source </div>
         <div class="script-id-badge" id="gateIdBadge">SCRIPT ID: —</div>
         <div class="field">
           <label>PASSWORD <span>*</span></label>
@@ -679,8 +679,8 @@ footer span {
         <div class="section-title">SOURCE SCRIPT</div>
         <div class="source-display" id="sourceDisplay"></div>
         <div class="output-actions" style="margin-top: 14px;">
-          <button class="btn-sm btn-copy-out" id="copySourceBtn" onclick="copySource()">COPY SOURCE</button>
-          <button class="btn-sm btn-reset" onclick="backToGate()">BACK</button>
+          <button class="btn-sm btn-copy-out" id="copySourceBtn" onclick="copySource()">Copy Script Source</button>
+          <button class="btn-sm btn-reset" onclick="backToGate()">Back</button>
         </div>
       </div>
     </div>
@@ -688,7 +688,7 @@ footer span {
   </div>
   <footer>
     <div class="container">
-      <span>RobloxObsucator.Py</span> — For educational purposes only.
+      <span>The best Url Obsufcate</span> in 2026
     </div>
   </footer>
 </div>
@@ -955,24 +955,184 @@ async function obfuscate() {
 
   var data = await res.json();
   var binId = data.metadata.id;
+  var safeMsg = message.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
-  var pageUrl = window.location.href.split('#')[0] + '#' + binId;
-  var loadstr = 'loadstring(game:HttpGet("' + pageUrl + '"))()';
+  var lua = [
+    'local HttpService = game:GetService("HttpService")',
+    'local Players = game:GetService("Players")',
+    'local player = Players.LocalPlayer',
+    '',
+    'local function xorDecode(s, k)',
+    '    local o = ""',
+    '    for i = 1, #s do',
+    '        o = o .. string.char(string.byte(s, i) ~ k)',
+    '    end',
+    '    return o',
+    'end',
+    '',
+    'local function b64Decode(data)',
+    '    local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"',
+    '    data = string.gsub(data, "[^" .. b .. "=]", "")',
+    '    return (data:gsub(".", function(x)',
+    '        if x == "=" then return "" end',
+    '        local r, f = "", (b:find(x) - 1)',
+    '        for i = 6, 1, -1 do',
+    '            r = r .. (f % 2^i - f % 2^(i-1) > 0 and "1" or "0")',
+    '        end',
+    '        return r',
+    '    end):gsub("%d%d%d%d%d%d%d%d", function(x)',
+    '        local c = 0',
+    '        for i = 1, 8 do c = c + (x:sub(i,i) == "1" and 2^(8-i) or 0) end',
+    '        return string.char(c)',
+    '    end))',
+    'end',
+    '',
+    'local function showPasswordGUI(callback)',
+    '    local sg = Instance.new("ScreenGui")',
+    '    sg.Name = "ProtectedScript"',
+    '    sg.ResetOnSpawn = false',
+    '    sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling',
+    '    sg.Parent = player:WaitForChild("PlayerGui")',
+    '',
+    '    local bg = Instance.new("Frame")',
+    '    bg.Size = UDim2.new(1, 0, 1, 0)',
+    '    bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)',
+    '    bg.BackgroundTransparency = 0.5',
+    '    bg.BorderSizePixel = 0',
+    '    bg.Parent = sg',
+    '',
+    '    local frame = Instance.new("Frame")',
+    '    frame.Size = UDim2.new(0, 320, 0, 220)',
+    '    frame.Position = UDim2.new(0.5, -160, 0.5, -110)',
+    '    frame.BackgroundColor3 = Color3.fromRGB(8, 8, 30)',
+    '    frame.BorderColor3 = Color3.fromRGB(0, 245, 255)',
+    '    frame.BorderSizePixel = 2',
+    '    frame.Parent = bg',
+    '',
+    '    local corner = Instance.new("UICorner")',
+    '    corner.CornerRadius = UDim.new(0, 10)',
+    '    corner.Parent = frame',
+    '',
+    '    local topbar = Instance.new("Frame")',
+    '    topbar.Size = UDim2.new(1, 0, 0, 3)',
+    '    topbar.BackgroundColor3 = Color3.fromRGB(0, 245, 255)',
+    '    topbar.BorderSizePixel = 0',
+    '    topbar.Parent = frame',
+    '',
+    '    local title = Instance.new("TextLabel")',
+    '    title.Size = UDim2.new(1, 0, 0, 45)',
+    '    title.Position = UDim2.new(0, 0, 0, 10)',
+    '    title.BackgroundTransparency = 1',
+    '    title.Text = "PROTECTED SCRIPT"',
+    '    title.TextColor3 = Color3.fromRGB(0, 245, 255)',
+    '    title.Font = Enum.Font.GothamBold',
+    '    title.TextSize = 16',
+    '    title.Parent = frame',
+    '',
+    '    local sub = Instance.new("TextLabel")',
+    '    sub.Size = UDim2.new(1, 0, 0, 25)',
+    '    sub.Position = UDim2.new(0, 0, 0, 50)',
+    '    sub.BackgroundTransparency = 1',
+    '    sub.Text = "Enter password to access"',
+    '    sub.TextColor3 = Color3.fromRGB(96, 96, 170)',
+    '    sub.Font = Enum.Font.Gotham',
+    '    sub.TextSize = 12',
+    '    sub.Parent = frame',
+    '',
+    '    local inputBg = Instance.new("Frame")',
+    '    inputBg.Size = UDim2.new(1, -40, 0, 42)',
+    '    inputBg.Position = UDim2.new(0, 20, 0, 85)',
+    '    inputBg.BackgroundColor3 = Color3.fromRGB(3, 3, 20)',
+    '    inputBg.BorderColor3 = Color3.fromRGB(0, 245, 255)',
+    '    inputBg.BorderSizePixel = 1',
+    '    inputBg.Parent = frame',
+    '',
+    '    local inputCorner = Instance.new("UICorner")',
+    '    inputCorner.CornerRadius = UDim.new(0, 6)',
+    '    inputCorner.Parent = inputBg',
+    '',
+    '    local input = Instance.new("TextBox")',
+    '    input.Size = UDim2.new(1, -16, 1, 0)',
+    '    input.Position = UDim2.new(0, 8, 0, 0)',
+    '    input.BackgroundTransparency = 1',
+    '    input.PlaceholderText = "Password..."',
+    '    input.Text = ""',
+    '    input.TextColor3 = Color3.fromRGB(0, 245, 255)',
+    '    input.PlaceholderColor3 = Color3.fromRGB(96, 96, 170)',
+    '    input.Font = Enum.Font.Code',
+    '    input.TextSize = 14',
+    '    input.ClearTextOnFocus = false',
+    '    input.Parent = inputBg',
+    '',
+    '    local errLabel = Instance.new("TextLabel")',
+    '    errLabel.Size = UDim2.new(1, -40, 0, 20)',
+    '    errLabel.Position = UDim2.new(0, 20, 0, 132)',
+    '    errLabel.BackgroundTransparency = 1',
+    '    errLabel.Text = ""',
+    '    errLabel.TextColor3 = Color3.fromRGB(255, 45, 120)',
+    '    errLabel.Font = Enum.Font.Gotham',
+    '    errLabel.TextSize = 11',
+    '    errLabel.Parent = frame',
+    '',
+    '    local btnFrame = Instance.new("TextButton")',
+    '    btnFrame.Size = UDim2.new(1, -40, 0, 42)',
+    '    btnFrame.Position = UDim2.new(0, 20, 0, 158)',
+    '    btnFrame.BackgroundColor3 = Color3.fromRGB(191, 0, 255)',
+    '    btnFrame.BorderSizePixel = 0',
+    '    btnFrame.Text = "Start"',
+    '    btnFrame.TextColor3 = Color3.fromRGB(255, 255, 255)',
+    '    btnFrame.Font = Enum.Font.GothamBold',
+    '    btnFrame.TextSize = 14',
+    '    btnFrame.Parent = frame',
+    '',
+    '    local btnCorner = Instance.new("UICorner")',
+    '    btnCorner.CornerRadius = UDim.new(0, 6)',
+    '    btnCorner.Parent = btnFrame',
+    '',
+    '    btnFrame.MouseButton1Click:Connect(function()',
+    '        callback(input.Text, errLabel, sg)',
+    '    end)',
+    'end',
+    '',
+    'local ok, result = pcall(function()',
+    '    local raw = game:HttpGet("https://api.jsonbin.io/v3/b/' + binId + '/latest", true)',
+    '    local parsed = HttpService:JSONDecode(raw)',
+    '    return parsed.record',
+    'end)',
+    '',
+    'if not ok then',
+    '    error("Failed to fetch script data.", 0)',
+    'end',
+    '',
+    'showPasswordGUI(function(entered, errLabel, sg)',
+    '    if entered ~= result.password then',
+    '        errLabel.Text = "Incorrect password. Access denied."',
+    '        return',
+    '    end',
+    '    sg:Destroy()',
+    '    local decoded = xorDecode(b64Decode(result.encoded), result.key)',
+    '    local fn, err = loadstring(decoded)',
+    '    if not fn then',
+    '        error("' + safeMsg + '" .. tostring(err), 0)',
+    '    end',
+    '    fn()',
+    'end)'
+  ].join('\n');
 
-  document.getElementById('outputBox').textContent = loadstr;
+  document.getElementById('outputBox').textContent = lua;
 
   btn.classList.remove('loading');
-  btn.textContent = 'OBFUSCATE SCRIPT';
+  btn.textContent = 'Obsucate Script';
   outputWrap.classList.add('show');
 }
 
 function copyOutput() {
   navigator.clipboard.writeText(document.getElementById('outputBox').textContent).then(function () {
     var btn = document.getElementById('copyOutBtn');
-    btn.textContent = 'COPIED';
+    btn.textContent = 'Copied';
     btn.classList.add('copied');
     setTimeout(function () {
-      btn.textContent = 'COPY';
+      btn.textContent = 'Copy';
       btn.classList.remove('copied');
     }, 1800);
   });
