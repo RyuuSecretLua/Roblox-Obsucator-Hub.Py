@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RobloxObsucator.Py</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #02020f;
+  --card: rgba(8, 8, 35, 0.85);
+  --neon-pink: #ff2d78;
+  --neon-cyan: #00f5ff;
+  --neon-green: #39ff14;
+  --neon-purple: #bf00ff;
+  --neon-yellow: #ffe600;
+  --text: #e0e0ff;
+  --muted: #6060aa;
+  --border: rgba(0, 245, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+#space-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.025) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+.bg-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(2, 2, 15, 0.85) 100%);
+  pointer-events: none;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 3;
+}
+
+header {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span:nth-child(1) {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+  animation: glitch-cyan 4s infinite;
+}
+
+.logo span:nth-child(2) {
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px var(--neon-pink), 0 0 30px var(--neon-pink);
+  animation: glitch-pink 4s infinite 0.5s;
+}
+
+.logo span:nth-child(3) {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green), 0 0 30px var(--neon-green);
+  animation: flicker 3s infinite 1s;
+}
+
+@keyframes glitch-cyan {
+  0%, 90%, 100% { text-shadow: 0 0 8px var(--neon-cyan), 0 0 30px var(--neon-cyan); }
+  92% { text-shadow: -3px 0 var(--neon-pink), 3px 0 var(--neon-cyan); }
+  94% { text-shadow: 3px 0 var(--neon-purple), -3px 0 var(--neon-cyan); }
+}
+
+@keyframes glitch-pink {
+  0%, 88%, 100% { text-shadow: 0 0 8px var(--neon-pink), 0 0 30px var(--neon-pink); }
+  90% { text-shadow: -3px 0 var(--neon-cyan), 3px 0 var(--neon-pink); }
+  92% { text-shadow: 3px 0 var(--neon-yellow), -3px 0 var(--neon-pink); }
+}
+
+@keyframes flicker {
+  0%, 80%, 82%, 84%, 100% { opacity: 1; }
+  81%, 83% { opacity: 0.4; }
+}
+
+.logo-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 4px;
+  margin-top: 3px;
+}
+
+.badge {
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  padding: 4px 14px;
+  border-radius: 20px;
+  animation: badge-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 18px rgba(191, 0, 255, 0.5);
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(191, 0, 255, 0.5); }
+  50% { box-shadow: 0 0 28px rgba(255, 45, 120, 0.7); }
+}
+
+.main-card {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  margin: 28px 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 245, 255, 0.05);
+  animation: card-appear 0.6s ease both;
+}
+
+@keyframes card-appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+.main-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-green), var(--neon-cyan));
+  background-size: 200% 100%;
+  animation: border-flow 3s linear infinite;
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: var(--neon-cyan);
+  letter-spacing: 3px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--neon-cyan), transparent);
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+.field:focus-within label {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.field label span {
+  color: var(--neon-pink);
+  text-shadow: 0 0 6px var(--neon-pink);
+}
+
+textarea,
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  background: rgba(3, 3, 20, 0.8);
+  border: 1px solid rgba(0, 245, 255, 0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--neon-cyan);
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(8px);
+  text-shadow: 0 0 6px rgba(0, 245, 255, 0.4);
+  caret-color: var(--neon-cyan);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+
+textarea:focus,
+input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 0 1px rgba(0, 245, 255, 0.2), 0 0 20px rgba(0, 245, 255, 0.15);
+  background: rgba(0, 10, 30, 0.9);
+}
+
+textarea:hover,
+input:hover {
+  border-color: rgba(0, 245, 255, 0.25);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: rgba(96, 96, 170, 0.6);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+.btn-main {
+  width: 100%;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  padding: 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  color: #fff;
+  box-shadow: 0 0 24px rgba(191, 0, 255, 0.4);
+  transition: all 0.25s;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.btn-main::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: skewX(-20deg);
+  transition: left 0.5s;
+}
+
+.btn-main:hover::before { left: 120%; }
+
+.btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(255, 45, 120, 0.6);
+}
+
+.btn-main:active { transform: scale(0.98); }
+
+.btn-main.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.progress-wrap {
+  margin: 20px 0 0;
+  display: none;
+}
+
+.progress-wrap.show { display: block; }
+
+.progress-bar-bg {
+  background: #05050f;
+  border-radius: 20px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0, 245, 255, 0.1);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan), var(--neon-pink));
+  background-size: 200% 100%;
+  border-radius: 20px;
+  transition: width 0.3s;
+  box-shadow: 0 0 10px var(--neon-cyan);
+  animation: progress-shimmer 1.5s linear infinite;
+}
+
+@keyframes progress-shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+.progress-log {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.progress-log span {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green);
+}
+
+.output-wrap {
+  margin-top: 28px;
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.output-wrap.show { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.output-box {
+  background: rgba(2, 10, 5, 0.9);
+  border: 1px solid var(--neon-green);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--neon-green);
+  word-break: break-all;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.12);
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.output-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-sm {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-copy-out {
+  background: rgba(57, 255, 20, 0.08);
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green);
+}
+
+.btn-copy-out:hover {
+  background: rgba(57, 255, 20, 0.2);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-reset {
+  background: rgba(255, 45, 120, 0.08);
+  border: 1px solid var(--neon-pink);
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px var(--neon-pink);
+}
+
+.btn-reset:hover {
+  background: rgba(255, 45, 120, 0.2);
+  box-shadow: 0 0 15px rgba(255, 45, 120, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-sm.copied {
+  background: rgba(57, 255, 20, 0.2);
+  color: #fff;
+}
+
+.gate-card {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  margin: 28px auto;
+  max-width: 480px;
+  position: relative;
+  overflow: hidden;
+  animation: card-appear 0.6s ease both;
+}
+
+.gate-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-pink));
+  background-size: 200% 100%;
+  animation: border-flow 3s linear infinite;
+}
+
+.gate-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--neon-pink);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px var(--neon-pink);
+  animation: flicker 4s infinite;
+}
+
+.gate-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+
+.script-id-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--neon-cyan);
+  background: rgba(0, 245, 255, 0.06);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 6px;
+  padding: 8px 14px;
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+}
+
+.error-msg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--neon-pink);
+  margin-top: 10px;
+  display: none;
+  text-align: center;
+  text-shadow: 0 0 8px var(--neon-pink);
+}
+
+.error-msg.show {
+  display: block;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.source-display {
+  background: rgba(2, 10, 20, 0.9);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--neon-cyan);
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 1.7;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.08);
+  text-shadow: 0 0 6px rgba(0, 245, 255, 0.3);
+}
+
+.info-box {
+  background: rgba(0, 245, 255, 0.04);
+  border: 1px solid rgba(0, 245, 255, 0.18);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 22px;
+  line-height: 1.8;
+}
+
+.info-box span {
+  color: var(--neon-cyan);
+}
+
+footer {
+  margin-top: 40px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+footer span {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<canvas id="space-canvas"></canvas>
+<div class="bg-grid"></div>
+<div class="bg-vignette"></div>
+
+<div id="mainPage">
+  <div class="container">
+
+    <header>
+      <div class="header-inner">
+        <div>
+          <div class="logo">
+            <span>Roblox</span><span>Obsucator</span><span>.Py</span>
+          </div>
+          <div class="logo-sub">SCRIPT PROTECTOR · REAL EXECUTOR OUTPUT</div>
+        </div>
+        <div class="badge">V2.0</div>
+      </div>
+    </header>
+
+    <div class="main-card">
+      <div class="section-title">RobloxOsbucater-Oriender</div>
+
+      <div class="field">
+        <label>SOURCE SCRIPT <span>*</span></label>
+        <textarea id="sourceInput" placeholder="-- Paste your Lua/Luau script here..."></textarea>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>PASSWORD <span>*</span></label>
+          <input type="password" id="passwordInput" placeholder="Set a password..."/>
+        </div>
+        <div class="field">
+          <label>MESSAGE (Cracker) <span>*</span></label>
+          <input type="text" id="messageInput" placeholder="e.g: This script is protected!"/>
+        </div>
+      </div>
+
+      <button class="btn-main" id="obfuscateBtn" onclick="obfuscate()">Create Url Scripts</button>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-log" id="progressLog"></div>
+      </div>
+
+      <div class="output-wrap" id="outputWrap">
+        <div class="section-title" style="margin-top: 8px;">OUTPUT — PASTE TO EXECUTOR</div>
+        <div class="output-box" id="outputBox"></div>
+        <div class="output-actions">
+          <button class="btn-sm btn-copy-out" id="copyOutBtn" onclick="copyOutput()">COPY</button>
+          <button class="btn-sm btn-reset" onclick="resetForm()">RESET</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <footer>
+    <div class="container">
+      <span>RobloxObsucator.Py</span> ("Print Hi World")
+    </div>
+  </footer>
+</div>
+
+<div id="gatePage" style="display:none;">
+  <div class="container">
+    <header>
+      <div class="header-inner">
+        <div>
+          <div class="logo">
+            <span>Roblox</span><span>Obsucator</span><span>.Py</span>
+          </div>
+          <div class="logo-sub">Script Protected Url</div>
+        </div>
+        <div class="badge">V2.0</div>
+      </div>
+    </header>
+
+    <div id="gateStep">
+      <div class="gate-card">
+        <div class="gate-title">PROTECTED SCRIPT</div>
+        <div class="gate-sub">ENTER PASSWORD TO ACCESS SOURCE</div>
+        <div class="script-id-badge" id="gateIdBadge">SCRIPT ID: —</div>
+        <div class="field">
+          <label>PASSWORD <span>*</span></label>
+          <input type="password" id="gatePassword" placeholder="Enter script password..."/>
+        </div>
+        <div class="error-msg" id="errorMsg">Incorrect password. Access denied.</div>
+        <button class="btn-main" onclick="checkGate()">START</button>
+      </div>
+    </div>
+
+    <div id="sourceStep" style="display:none;">
+      <div class="main-card">
+        <div class="section-title">SOURCE SCRIPT</div>
+        <div class="source-display" id="sourceDisplay"></div>
+        <div class="output-actions" style="margin-top: 14px;">
+          <button class="btn-sm btn-copy-out" id="copySourceBtn" onclick="copySource()">COPY SOURCE</button>
+          <button class="btn-sm btn-reset" onclick="backToGate()">BACK</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <footer>
+    <div class="container">
+      <span>RobloxObsucator.Py</span> — For educational purposes only.
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById('space-canvas');
+  var ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var stars = [];
+  for (var i = 0; i < 220; i++) {
+    stars.push({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1.4 + 0.2,
+      op: Math.random() * 0.8 + 0.2,
+      ts: Math.random() * 0.02 + 0.005,
+      to: Math.random() * Math.PI * 2,
+      col: ['#ffffff', '#c0e8ff', '#ffd0ff', '#d0ffff'][Math.floor(Math.random() * 4)]
+    });
+  }
+
+  var shooting = [];
+  function spawnShoot() {
+    shooting.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5,
+      len: Math.random() * 120 + 60,
+      spd: Math.random() * 6 + 4,
+      op: 1,
+      angle: Math.PI / 5 + (Math.random() - 0.5) * 0.3,
+      col: ['#00f5ff', '#ff2d78', '#bf00ff', '#39ff14'][Math.floor(Math.random() * 4)]
+    });
+  }
+  setInterval(spawnShoot, 2800);
+
+  var orbits = [
+    { cx: 0.15, cy: 0.35, rx: 120, ry: 40, angle: -0.4, spd: 0.0008, col: 'rgba(0,245,255,', planets: [{ pos: 0, r: 4, col: '#00f5ff' }] },
+    { cx: 0.85, cy: 0.25, rx: 100, ry: 32, angle: 0.3, spd: -0.0006, col: 'rgba(191,0,255,', planets: [{ pos: 2.1, r: 3, col: '#bf00ff' }] },
+    { cx: 0.5, cy: 0.08, rx: 160, ry: 30, angle: -0.15, spd: 0.0005, col: 'rgba(255,45,120,', planets: [{ pos: 1.0, r: 3.5, col: '#ff2d78' }, { pos: 3.8, r: 2, col: '#ffe600' }] },
+    { cx: 0.1, cy: 0.8, rx: 90, ry: 28, angle: 0.5, spd: 0.001, col: 'rgba(57,255,20,', planets: [{ pos: 0.5, r: 2.5, col: '#39ff14' }] },
+    { cx: 0.88, cy: 0.75, rx: 110, ry: 36, angle: -0.2, spd: -0.0007, col: 'rgba(0,245,255,', planets: [{ pos: 3.0, r: 3, col: '#00f5ff' }] }
+  ];
+
+  var nebulas = [
+    { x: 0.15, y: 0.2, r: 200, col: 'rgba(0,245,255,0.04)' },
+    { x: 0.8, y: 0.7, r: 180, col: 'rgba(191,0,255,0.05)' },
+    { x: 0.5, y: 0.5, r: 250, col: 'rgba(255,45,120,0.03)' },
+    { x: 0.1, y: 0.85, r: 140, col: 'rgba(57,255,20,0.04)' }
+  ];
+
+  var t = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#02020f';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (var n = 0; n < nebulas.length; n++) {
+      var nb = nebulas[n];
+      var grd = ctx.createRadialGradient(
+        nb.x * canvas.width, nb.y * canvas.height, 0,
+        nb.x * canvas.width, nb.y * canvas.height, nb.r
+      );
+      grd.addColorStop(0, nb.col);
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(nb.x * canvas.width, nb.y * canvas.height, nb.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    for (var s = 0; s < stars.length; s++) {
+      var st = stars[s];
+      var twinkle = Math.sin(t * st.ts * 60 + st.to) * 0.4 + 0.6;
+      ctx.save();
+      ctx.globalAlpha = st.op * twinkle;
+      ctx.fillStyle = st.col;
+      ctx.shadowBlur = st.r > 1 ? 6 : 2;
+      ctx.shadowColor = st.col;
+      ctx.beginPath();
+      ctx.arc(st.x * canvas.width, st.y * canvas.height, st.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    for (var i = shooting.length - 1; i >= 0; i--) {
+      var ss = shooting[i];
+      ctx.save();
+      ctx.globalAlpha = ss.op;
+      var g = ctx.createLinearGradient(
+        ss.x, ss.y,
+        ss.x - Math.cos(ss.angle) * ss.len,
+        ss.y - Math.sin(ss.angle) * ss.len
+      );
+      g.addColorStop(0, ss.col);
+      g.addColorStop(1, 'transparent');
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = ss.col;
+      ctx.beginPath();
+      ctx.moveTo(ss.x, ss.y);
+      ctx.lineTo(ss.x - Math.cos(ss.angle) * ss.len, ss.y - Math.sin(ss.angle) * ss.len);
+      ctx.stroke();
+      ctx.restore();
+      ss.x += Math.cos(ss.angle) * ss.spd;
+      ss.y += Math.sin(ss.angle) * ss.spd;
+      ss.op -= 0.012;
+      if (ss.op <= 0) shooting.splice(i, 1);
+    }
+
+    for (var o = 0; o < orbits.length; o++) {
+      var orb = orbits[o];
+      for (var p = 0; p < orb.planets.length; p++) orb.planets[p].pos += orb.spd;
+      var ocx = orb.cx * canvas.width;
+      var ocy = orb.cy * canvas.height;
+      ctx.save();
+      ctx.translate(ocx, ocy);
+      ctx.rotate(orb.angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, orb.rx, orb.ry, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = orb.col + '0.2)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 8]);
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = orb.col + '0.4)';
+      ctx.stroke();
+      ctx.setLineDash([]);
+      for (var p2 = 0; p2 < orb.planets.length; p2++) {
+        var pl = orb.planets[p2];
+        var plx = Math.cos(pl.pos) * orb.rx;
+        var ply = Math.sin(pl.pos) * orb.ry;
+        ctx.save();
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = pl.col;
+        ctx.fillStyle = pl.col;
+        ctx.beginPath();
+        ctx.arc(plx, ply, pl.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 0.25;
+        var gr2 = ctx.createRadialGradient(plx, ply, 0, plx, ply, pl.r * 5);
+        gr2.addColorStop(0, pl.col);
+        gr2.addColorStop(1, 'transparent');
+        ctx.fillStyle = gr2;
+        ctx.beginPath();
+        ctx.arc(plx, ply, pl.r * 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+
+var JSONBIN_KEY = '$2a$10$Cg9CYMmu81uD.L1nb57eW.lwIUcuQru66fy15fD/t3sBrgEjTwfbu';
+var JSONBIN_URL = 'https://api.jsonbin.io/v3/b';
+
+function xorEncode(str, key) {
+  var out = '';
+  for (var i = 0; i < str.length; i++) {
+    out += String.fromCharCode(str.charCodeAt(i) ^ key);
+  }
+  return out;
+}
+
+function toB64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function randStr(len) {
+  var c = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var r = '';
+  for (var i = 0; i < len; i++) r += c[Math.floor(Math.random() * c.length)];
+  return r;
+}
+
+var stored = {};
+
+function checkURL() {
+  var hash = window.location.hash.replace('#', '').trim();
+  if (hash && hash.length > 0) {
+    document.getElementById('mainPage').style.display = 'none';
+    document.getElementById('gatePage').style.display = 'block';
+    document.getElementById('gateIdBadge').textContent = 'SCRIPT ID: ' + hash.toUpperCase();
+    return hash;
+  }
+  return null;
+}
+
+var currentId = null;
+window.onload = function () { currentId = checkURL(); };
+window.onhashchange = function () { currentId = checkURL(); };
+
+async function obfuscate() {
+  var source = document.getElementById('sourceInput').value.trim();
+  var password = document.getElementById('passwordInput').value.trim();
+  var message = document.getElementById('messageInput').value.trim();
+
+  if (!source) { alert('Source script is empty!'); return; }
+  if (!password) { alert('Password is empty!'); return; }
+  if (!message) { alert('Anti crack message is empty!'); return; }
+
+  var key = Math.floor(Math.random() * 254) + 1;
+  var btn = document.getElementById('obfuscateBtn');
+  var progressWrap = document.getElementById('progressWrap');
+  var progressBar = document.getElementById('progressBar');
+  var progressLog = document.getElementById('progressLog');
+  var outputWrap = document.getElementById('outputWrap');
+
+  btn.classList.add('loading');
+  btn.textContent = 'PROCESSING...';
+  progressWrap.classList.add('show');
+  outputWrap.classList.remove('show');
+
+  var steps = [
+    [15, '> Parsing source script...'],
+    [35, '> XOR encoding payload...'],
+    [55, '> Base64 wrapping...'],
+    [72, '> Injecting password lock...'],
+    [88, '> Saving to cloud...'],
+    [100, '> Done!']
+  ];
+
+  for (var i = 0; i < steps.length; i++) {
+    progressBar.style.width = steps[i][0] + '%';
+    progressLog.innerHTML = '<span>' + steps[i][1] + '</span>';
+    await new Promise(function (r) { setTimeout(r, 280); });
+  }
+
+  var xored = xorEncode(source, key);
+  var encoded = toB64(xored);
+
+  var payload = { password: password, encoded: encoded, key: key, message: message };
+
+  var res = await fetch(JSONBIN_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': JSONBIN_KEY,
+      'X-Bin-Private': 'false'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    alert('Failed to save script. Check your API key!');
+    btn.classList.remove('loading');
+    btn.textContent = 'OBFUSCATE SCRIPT';
+    return;
+  }
+
+  var data = await res.json();
+  var binId = data.metadata.id;
+
+  var pageUrl = window.location.href.split('#')[0] + '#' + binId;
+  var loadstr = 'loadstring(game:HttpGet("' + pageUrl + '"))()';
+
+  document.getElementById('outputBox').textContent = loadstr;
+
+  btn.classList.remove('loading');
+  btn.textContent = 'OBFUSCATE SCRIPT';
+  outputWrap.classList.add('show');
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputBox').textContent).then(function () {
+    var btn = document.getElementById('copyOutBtn');
+    btn.textContent = 'COPIED';
+    btn.classList.add('copied');
+    setTimeout(function () {
+      btn.textContent = 'COPY';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+function resetForm() {
+  document.getElementById('sourceInput').value = '';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('messageInput').value = '';
+  document.getElementById('outputWrap').classList.remove('show');
+  document.getElementById('progressWrap').classList.remove('show');
+  document.getElementById('progressBar').style.width = '0%';
+}
+
+async function checkGate() {
+  var pwd = document.getElementById('gatePassword').value.trim();
+  var errMsg = document.getElementById('errorMsg');
+  var id = currentId;
+
+  if (!id) { errMsg.classList.add('show'); return; }
+
+  var res = await fetch(JSONBIN_URL + '/' + id + '/latest', {
+    headers: { 'X-Master-Key': JSONBIN_KEY }
+  });
+
+  if (!res.ok) {
+    errMsg.classList.remove('show');
+    void errMsg.offsetWidth;
+    errMsg.classList.add('show');
+    return;
+  }
+
+  var data = (await res.json()).record;
+
+  if (data.password !== pwd) {
+    errMsg.classList.remove('show');
+    void errMsg.offsetWidth;
+    errMsg.classList.add('show');
+    return;
+  }
+
+  errMsg.classList.remove('show');
+
+  var xored = atob(data.encoded);
+  var decoded = '';
+  for (var i = 0; i < xored.length; i++) {
+    decoded += String.fromCharCode(xored.charCodeAt(i) ^ data.key);
+  }
+
+  document.getElementById('sourceDisplay').textContent = decoded;
+  document.getElementById('gateStep').style.display = 'none';
+  document.getElementById('sourceStep').style.display = 'block';
+}
+
+function copySource() {
+  navigator.clipboard.writeText(document.getElementById('sourceDisplay').textContent).then(function () {
+    var btn = document.getElementById('copySourceBtn');
+    btn.textContent = 'COPIED';
+    btn.classList.add('copied');
+    setTimeout(function () {
+      btn.textContent = 'COPY SOURCE';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+function backToGate() {
+  document.getElementById('gatePassword').value = '';
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('gateStep').style.display = 'block';
+  document.getElementById('sourceStep').style.display = 'none';
+}
+</script>
+</body>
+</html>
